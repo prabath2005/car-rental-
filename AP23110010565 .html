@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental Service</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .container { margin-top: 30px; }
+        .car-card { transition: transform 0.3s; }
+        .car-card:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Car Rental</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- Car Filters -->
+        <div class="row my-4">
+            <div class="col-md-4">
+                <label>Filter by Car Type:</label>
+                <select class="form-select" id="filterCarType">
+                    <option value="all">All</option>
+                    <option value="sedan">Sedan</option>
+                    <option value="suv">SUV</option>
+                    <option value="luxury">Luxury</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Car Listings -->
+        <div class="row" id="carList">
+            <!-- Car Cards will be generated dynamically -->
+        </div>
+
+        <!-- Booking Form -->
+        <div class="card mt-4 p-3">
+            <h3>Book a Car</h3>
+            <label>Select Car:</label>
+            <select class="form-select" id="carSelect"></select>
+
+            <label>Rental Duration (Days):</label>
+            <input type="number" class="form-control" id="rentalDays" min="1" value="1">
+
+            <h4 class="mt-3">Total Price: $<span id="totalPrice">0</span></h4>
+            <button class="btn btn-primary mt-2" onclick="calculatePrice()">Calculate Price</button>
+            <button class="btn btn-success mt-2" onclick="confirmBooking()">Proceed to Payment</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Sample Car Data
+        const cars = [
+            { id: 1, name: "Toyota Corolla", price: 50, type: "sedan", image: "https://via.placeholder.com/200" },
+            { id: 2, name: "Honda CRV", price: 70, type: "suv", image: "https://via.placeholder.com/200" },
+            { id: 3, name: "BMW X5", price: 100, type: "luxury", image: "https://via.placeholder.com/200" }
+        ];
+
+        // Load Car Listings
+        function loadCars(filter = "all") {
+            const carList = document.getElementById("carList");
+            const carSelect = document.getElementById("carSelect");
+            carList.innerHTML = "";
+            carSelect.innerHTML = "";
+
+            cars.forEach(car => {
+                if (filter === "all" || car.type === filter) {
+                    carList.innerHTML += `
+                        <div class="col-md-4">
+                            <div class="card car-card">
+                                <img src="${car.image}" class="card-img-top" alt="${car.name}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${car.name}</h5>
+                                    <p class="card-text">Price: $${car.price}/day</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    carSelect.innerHTML += <option value="${car.price}">${car.name} ($${car.price}/day)</option>;
+                }
+            });
+        }
+
+        // Calculate Price
+        function calculatePrice() {
+            let pricePerDay = document.getElementById("carSelect").value;
+            let days = document.getElementById("rentalDays").value;
+            document.getElementById("totalPrice").innerText = pricePerDay * days;
+        }
+
+        // Mock Payment Confirmation
+        function confirmBooking() {
+            alert("Redirecting to Payment...");
+        }
+
+        // Filter Cars
+        document.getElementById("filterCarType").addEventListener("change", function() {
+            loadCars(this.value);
+        });
+
+        // Initial Load
+        loadCars();
+    </script>
+
+</body>
+</html>
